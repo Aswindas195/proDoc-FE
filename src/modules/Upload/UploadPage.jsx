@@ -3,16 +3,26 @@ import JSZip from "jszip";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
+
 import Paper from "@mui/material/Paper";
 import Input from "@mui/material/Input";
+import { Box } from "@mui/material";
 
 function UploadPage() {
   const [zipFile, setZipFile] = useState(null);
   const [files, setFiles] = useState([]);
+  const [error, setError] = useState(null);
 
   const handleFileUpload = (event) => {
-    setZipFile(event.target.files[0]);
+    const file = event.target.files[0];
+    console.log(file);
+    if (file && file.type === "application/zip") {
+      setZipFile(file);
+      setError(null);
+    } else {
+      setZipFile(null);
+      setError("Please upload a valid .zip file.");
+    }
   };
 
   const handleGenerate = async () => {
@@ -31,32 +41,53 @@ function UploadPage() {
 
       setFiles(filesArray);
     } else {
-      console.log("No file uploaded.");
+      setError("Please upload a .zip file first.");
     }
   };
 
+  files.map((file) => console.log(file.path, file.content));
+
   return (
-    <Container maxWidth="md">
-      <Paper style={{ padding: "20px", marginTop: "20px" }}>
-        <Typography variant="h4" gutterBottom>
+    <Container maxWidth="sm" sx={{ borderRadius: "40px" }}>
+      <Paper
+        style={{ padding: "20px", marginTop: "20px", borderRadius: "10px" }}
+      >
+        <Typography variant="h4" gutterBottom sx={{ textAlign: "center" }}>
           Upload and Generate File List
         </Typography>
-        <Grid container spacing={2} alignItems="center">
-          <Grid item>
+        <Box
+          display={"flex"}
+          justifyContent={"space-between"}
+          alignItems="center"
+        >
+          <Box>
             <Input
               type="file"
               accept=".zip"
               onChange={handleFileUpload}
               inputProps={{ id: "file-upload" }}
             />
-          </Grid>
-          <Grid item>
-            <Button variant="contained" onClick={handleGenerate}>
+          </Box>
+          <Box>
+            <Button
+              variant="contained"
+              onClick={handleGenerate}
+              disabled={error}
+            >
               Generate
             </Button>
-          </Grid>
-        </Grid>
-        {files.length > 0 && (
+          </Box>
+        </Box>
+        {error && (
+          <Typography
+            variant="body1"
+            color="error"
+            style={{ marginTop: "10px" }}
+          >
+            {error}
+          </Typography>
+        )}
+        {/* {files.length > 0 && (
           <div style={{ marginTop: "20px" }}>
             <Typography variant="h5" gutterBottom>
               Extracted Files
@@ -70,7 +101,7 @@ function UploadPage() {
               ))}
             </ul>
           </div>
-        )}
+        )} */}
       </Paper>
     </Container>
   );
