@@ -112,7 +112,9 @@ function UploadPage() {
           >
             <Chip label={zipFile.name} sx={{ mr: 1 }} />
             <Typography variant="body2">
-              {(zipFile.size / (1024 * 1024)).toFixed(2)} MB
+              {zipFile.size / (1024 * 1024) < 1
+                ? `${(zipFile.size / 1024).toFixed(2)} KB`
+                : `${(zipFile.size / (1024 * 1024)).toFixed(2)} MB`}
             </Typography>
             <IconButton onClick={handleCancel} sx={{ ml: "auto" }}>
               <HighlightOffIcon />
