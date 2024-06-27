@@ -1,69 +1,79 @@
 import { useState } from "react";
-import { Box, Button, Typography } from "@mui/material";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import JSZip from "jszip";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import Input from "@mui/material/Input";
 
-const UploadPage = () => {
-  const [file, setFile] = useState(null);
+function UploadPage() {
+  const [zipFile, setZipFile] = useState(null);
+  const [files, setFiles] = useState([]);
 
-  const handleFileChange = (e) => {
-    console.log(e.target.files[0]);
-    setFile(e.target.files[0]);
+  const handleFileUpload = (event) => {
+    setZipFile(event.target.files[0]);
   };
 
-  const handleFileDrop = (e) => {
-    e.preventDefault();
-    setFile(e.dataTransfer.files[0]);
-  };
+  const handleGenerate = async () => {
+    if (zipFile) {
+      const zip = new JSZip();
+      const content = await zip.loadAsync(zipFile);
+      const filesArray = [];
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
+      for (const relativePath in content.files) {
+        const file = content.files[relativePath];
+        if (!file.dir) {
+          const fileContent = await file.async("string");
+          filesArray.push({ path: relativePath, content: fileContent });
+        }
+      }
+
+      setFiles(filesArray);
+    } else {
+      console.log("No file uploaded.");
+    }
   };
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      justifyContent="center"
-      width="50%"
-      height="50%"
-      borderRadius="10px"
-      padding="20px"
-      onDrop={handleFileDrop}
-      onDragOver={handleDragOver}
-    >
-      <input
-        type="file"
-        id="file-upload"
-        style={{ display: "none" }}
-        onChange={handleFileChange}
-      />
-      <label htmlFor="file-upload">
-        <Button
-          component="span"
-          variant="outlined"
-          color="primary"
-          startIcon={<CloudUploadIcon />}
-          sx={{
-            width: "400px",
-            height: "60px",
-            border: "2px solid #007bff",
-            fontSize: "24px",
-          }}
-        >
-          Choose Files
-        </Button>
-      </label>
-      <Typography variant="body2" color="textSecondary" mt={2}>
-        or drop files here
-      </Typography>
-      {file && (
-        <Typography variant="body2" color="textPrimary" mt={2}>
-          {file.name}
+    <Container maxWidth="md">
+      <Paper style={{ padding: "20px", marginTop: "20px" }}>
+        <Typography variant="h4" gutterBottom>
+          Upload and Generate File List
         </Typography>
-      )}
-    </Box>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item>
+            <Input
+              type="file"
+              accept=".zip"
+              onChange={handleFileUpload}
+              inputProps={{ id: "file-upload" }}
+            />
+          </Grid>
+          <Grid item>
+            <Button variant="contained" onClick={handleGenerate}>
+              Generate
+            </Button>
+          </Grid>
+        </Grid>
+        {files.length > 0 && (
+          <div style={{ marginTop: "20px" }}>
+            <Typography variant="h5" gutterBottom>
+              Extracted Files
+            </Typography>
+            <ul style={{ listStyleType: "none", padding: 0 }}>
+              {files.map((file, index) => (
+                <li key={index}>
+                  <Typography variant="subtitle1">{file.path}</Typography>
+                  <pre>{file.content}</pre>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </Paper>
+    </Container>
   );
-};
+}
 
 export default UploadPage;
