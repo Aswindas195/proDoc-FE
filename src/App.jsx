@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import JSZip from "jszip";
 import "./App.css";
-import InputFileUpload from "./InputFileUpload"; // Assuming InputFileUpload.jsx is in the same directory
+import InputFileUpload from "./InputFileUpload";
+import IconButton from "@mui/material/IconButton";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome"; // Use the desired icon
 
 function App() {
   const [zipFile, setZipFile] = useState(null);
@@ -26,9 +28,11 @@ function App() {
   return (
     <div className="App">
       <h1>Upload and Generate File List</h1>
-      <InputFileUpload onChange={handleFileUpload} />{" "}
-      {/* Use Material-UI upload button */}
-      <button onClick={handleGenerate}>Generate</button>
+      <InputFileUpload onChange={handleFileUpload} />
+      <IconButton color="secondary" onClick={handleGenerate}>
+        Generate
+        <AutoAwesomeIcon />
+      </IconButton>
     </div>
   );
 }
