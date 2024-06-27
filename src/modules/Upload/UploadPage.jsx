@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import { useState, useRef } from "react";
 import JSZip from "jszip";
 import {
   Button,
   Typography,
   Container,
   Paper,
-  Input,
   Box,
   Chip,
   IconButton,
@@ -17,12 +16,17 @@ function UploadPage() {
   const [zipFile, setZipFile] = useState(null);
   const [files, setFiles] = useState([]);
   const [error, setError] = useState(null);
+  const fileInputRef = useRef(null);
+  const MAX_SIZE = 50 * 1024 * 1024;
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
-    if (file && file.type === "application/zip") {
+    if (file && file.type === "application/zip" && file.size <= MAX_SIZE) {
       setZipFile(file);
       setError(null);
+    } else if (file.size >= MAX_SIZE) {
+      setZipFile(null);
+      setError("File is over 50MB");
     } else {
       setZipFile(null);
       setError("Please upload a valid .zip file.");
@@ -43,13 +47,21 @@ function UploadPage() {
         }
       }
 
-      setFiles(filesArray);
+      setFiles(filesArray.filter((file) => file.content));
     } else {
       setError("Please upload a .zip file first.");
     }
   };
-
   console.log(files);
+
+  const handleCancel = () => {
+    setZipFile(null);
+    setFiles([]);
+    setError(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = null;
+    }
+  };
 
   return (
     <Container maxWidth="sm" sx={{ borderRadius: "10px", mt: 4 }}>
@@ -75,6 +87,7 @@ function UploadPage() {
             id="file-upload"
             type="file"
             onChange={handleFileUpload}
+            ref={fileInputRef}
           />
           <label htmlFor="file-upload">
             <Button
@@ -82,7 +95,7 @@ function UploadPage() {
               component="span"
               startIcon={<UploadFileIcon />}
             >
-              Click to upload or drag and drop
+              Click to upload
             </Button>
           </label>
         </Box>
@@ -98,8 +111,10 @@ function UploadPage() {
             }}
           >
             <Chip label={zipFile.name} sx={{ mr: 1 }} />
-
-            <IconButton onClick={() => setZipFile(null)} sx={{ ml: "auto" }}>
+            <Typography variant="body2">
+              {(zipFile.size / (1024 * 1024)).toFixed(2)} MB
+            </Typography>
+            <IconButton onClick={handleCancel} sx={{ ml: "auto" }}>
               <HighlightOffIcon />
             </IconButton>
           </Box>
@@ -120,11 +135,7 @@ function UploadPage() {
           </Button>
           <Button
             variant="outlined"
-            onClick={() => {
-              setZipFile(null);
-              setFiles([]);
-              setError(null);
-            }}
+            onClick={handleCancel}
             sx={{ width: "100%" }}
           >
             Cancel
