@@ -19,9 +19,7 @@ export default function InputFileUpload({ onChange }) {
   return (
     <Button
       component="label"
-      role={undefined}
       variant="contained"
-      tabIndex={-1}
       startIcon={<CloudUploadIcon />}
     >
       Upload file
