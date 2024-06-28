@@ -10,10 +10,19 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import CloseIcon from "@mui/icons-material/Close";
+import CircularProgress from "@mui/material/CircularProgress";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 function App() {
   const [zipFile, setZipFile] = useState(null);
   const [fileData, setFileData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [responses, setResponses] = useState([]);
 
   const handleFileUpload = (file) => {
     setZipFile(file);
@@ -22,14 +31,17 @@ function App() {
   const handleRemoveFile = () => {
     setZipFile(null);
     setFileData([]);
+    setResponses([]);
   };
 
   const handleGenerate = async () => {
     if (zipFile) {
       try {
+        setLoading(true);
         const zip = new JSZip();
         const content = await zip.loadAsync(zipFile);
         const data = [];
+        const newResponses = [];
 
         const validExtensions = [
           ".js",
@@ -72,13 +84,16 @@ function App() {
                     "Content-Type": "application/json",
                   },
                   body: JSON.stringify({
-                    prompt: `I have a program file in my project. I want you to create a proper description about what is happening in this code. I will be providing you with the file path and the file content.Provide the detailed documentation that you will be provided to be enclosed between the markers "<start>" and "</end>".File path is: ${relativePath} and file content is: ${fileData}`,
+                    prompt: `I have a program file in my project. I want you to create a proper description about what is happening in this code. I will be providing you with the file path and the file content. Provide the detailed documentation that you will be provided to be enclosed between the markers "<start>" and "</end>". File path is: ${relativePath} and file content is: ${fileData}`,
                   }),
                 });
 
                 if (response.ok) {
                   const responseData = await response.json();
-                  console.log("API Response:", responseData);
+                  newResponses.push({
+                    path: relativePath,
+                    response: responseData.response,
+                  });
                 } else {
                   console.error("API Error:", response.statusText);
                 }
@@ -90,9 +105,12 @@ function App() {
         }
 
         setFileData(data);
+        setResponses(newResponses);
         console.log("File data:", data);
       } catch (error) {
         console.error("Error processing ZIP file:", error);
+      } finally {
+        setLoading(false);
       }
     } else {
       console.log("No file uploaded.");
@@ -126,10 +144,28 @@ function App() {
         variant="outlined"
         startIcon={<AutoAwesomeIcon sx={{ color: " #FFD700" }} />}
         sx={{ color: "black", backgroundColor: "lightgrey" }}
-        onClick={handleGenerate} // Call handleGenerate on button click
+        onClick={handleGenerate}
+        disabled={loading}
       >
         Generate
       </Button>
+      {loading && <CircularProgress />}
+      <Box>
+        {responses.map((res, index) => (
+          <Accordion key={index}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls={`panel${index}-content`}
+              id={`panel${index}-header`}
+            >
+              <Typography>{res.path}</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Markdown remarkPlugins={[remarkGfm]}>{res.response}</Markdown>
+            </AccordionDetails>
+          </Accordion>
+        ))}
+      </Box>
     </div>
   );
 }
