@@ -11,18 +11,27 @@ import Box from "@mui/material/Box";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import CloseIcon from "@mui/icons-material/Close";
 import CircularProgress from "@mui/material/CircularProgress";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import Popover from "@mui/material/Popover";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+
+const theme = createTheme();
+
+const useStyles = (theme) => ({
+  popover: {
+    padding: theme.spacing(2),
+    maxWidth: "80vw",
+  },
+});
 
 function App() {
   const [zipFile, setZipFile] = useState(null);
-  const [fileData, setFileData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [responses, setResponses] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [popoverContent, setPopoverContent] = useState("");
+  const classes = useStyles(theme); // Pass the theme here
 
   const handleFileUpload = (file) => {
     setZipFile(file);
@@ -30,7 +39,6 @@ function App() {
 
   const handleRemoveFile = () => {
     setZipFile(null);
-    setFileData([]);
     setResponses([]);
   };
 
@@ -41,7 +49,6 @@ function App() {
         const zip = new JSZip();
         const content = await zip.loadAsync(zipFile);
         const data = [];
-        const newResponses = [];
 
         const validExtensions = [
           ".js",
@@ -90,10 +97,10 @@ function App() {
 
                 if (response.ok) {
                   const responseData = await response.json();
-                  newResponses.push({
-                    path: relativePath,
-                    response: responseData.response,
-                  });
+                  setResponses((prevResponses) => [
+                    ...prevResponses,
+                    { path: relativePath, response: responseData.response },
+                  ]);
                 } else {
                   console.error("API Error:", response.statusText);
                 }
@@ -104,8 +111,7 @@ function App() {
           }
         }
 
-        setFileData(data);
-        setResponses(newResponses);
+        setZipFile(null);
         console.log("File data:", data);
       } catch (error) {
         console.error("Error processing ZIP file:", error);
@@ -117,56 +123,87 @@ function App() {
     }
   };
 
+  const handlePopoverOpen = (event, response) => {
+    setAnchorEl(event.currentTarget);
+    setPopoverContent(response);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+
   return (
-    <div className="App">
-      <AppBar position="static" sx={{ backgroundColor: "black" }}>
-        <Toolbar>
-          <Typography
-            variant="h6"
-            color="inherit"
-            component="div"
-            sx={{ marginLeft: 1 }}
-          >
-            ProDoc.
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Box className="content">
-        <h1>Upload and Generate File List</h1>
-        <DragAndDropUpload onFileUpload={handleFileUpload} />
-        {zipFile && (
-          <IconButton color="secondary" onClick={handleRemoveFile}>
-            <CloseIcon />
-          </IconButton>
-        )}
-      </Box>
-      <Button
-        variant="outlined"
-        startIcon={<AutoAwesomeIcon sx={{ color: " #FFD700" }} />}
-        sx={{ color: "black", backgroundColor: "lightgrey" }}
-        onClick={handleGenerate}
-        disabled={loading}
-      >
-        Generate
-      </Button>
-      {loading && <CircularProgress />}
-      <Box>
-        {responses.map((res, index) => (
-          <Accordion key={index}>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls={`panel${index}-content`}
-              id={`panel${index}-header`}
+    <ThemeProvider theme={theme}>
+      {" "}
+      {/* Wrap your app with ThemeProvider */}
+      <div className="App">
+        <AppBar position="static" sx={{ backgroundColor: "black" }}>
+          <Toolbar>
+            <Typography
+              variant="h6"
+              color="inherit"
+              component="div"
+              sx={{ marginLeft: 1 }}
             >
-              <Typography>{res.path}</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Markdown remarkPlugins={[remarkGfm]}>{res.response}</Markdown>
-            </AccordionDetails>
-          </Accordion>
-        ))}
-      </Box>
-    </div>
+              ProDoc.
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <Box className="content">
+          <h1>Upload and Generate File List</h1>
+          <DragAndDropUpload onFileUpload={handleFileUpload} />
+          {zipFile && (
+            <IconButton color="secondary" onClick={handleRemoveFile}>
+              <CloseIcon />
+            </IconButton>
+          )}
+        </Box>
+        <Button
+          variant="outlined"
+          startIcon={<AutoAwesomeIcon sx={{ color: "#FFD700" }} />}
+          sx={{ color: "black", backgroundColor: "lightgrey" }}
+          onClick={handleGenerate}
+          disabled={loading}
+        >
+          Generate
+        </Button>
+        {loading && <CircularProgress />}
+        <Box sx={{ mt: 2 }}>
+          {responses.map((res, index) => (
+            <Box key={index} sx={{ my: 2, textAlign: "left" }}>
+              <Typography
+                variant="h6"
+                onClick={(event) => handlePopoverOpen(event, res.response)}
+                style={{ cursor: "pointer" }}
+              >
+                {res.path}
+              </Typography>
+              <Popover
+                open={open}
+                anchorEl={anchorEl}
+                onClose={handlePopoverClose}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "center",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "center",
+                }}
+              >
+                <Box className={classes.popover}>
+                  <Markdown remarkPlugins={[remarkGfm]}>
+                    {popoverContent}
+                  </Markdown>
+                </Box>
+              </Popover>
+            </Box>
+          ))}
+        </Box>
+      </div>
+    </ThemeProvider>
   );
 }
 
