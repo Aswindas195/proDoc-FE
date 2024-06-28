@@ -9,6 +9,7 @@ import {
   Box,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useSelector } from "react-redux";
 
 const contents = [
   { title: "Item 1", details: "Details of Item 1" },
@@ -28,6 +29,8 @@ const ITEMS_PER_PAGE = 8;
 
 const ResultsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const files = useSelector((state) => state.result);
+  console.log(files);
 
   const handlePageChange = (event, value) => {
     setCurrentPage(value);

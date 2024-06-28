@@ -14,15 +14,20 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import { CloudUpload } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { removeFiles, setFiles } from "../../main/slice/slice"; // Adjust the import path as necessary
 
 function UploadPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [zipFile, setZipFile] = useState(null);
-  const [files, setFiles] = useState([]);
   const [error, setError] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
   const MAX_SIZE = 50 * 1024 * 1024;
+
+  dispatch(removeFiles());
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -44,28 +49,79 @@ function UploadPage() {
 
   const handleGenerate = async () => {
     if (zipFile) {
-      const zip = new JSZip();
-      const content = await zip.loadAsync(zipFile);
-      const filesArray = [];
+      try {
+        setLoading(true);
+        const zip = new JSZip();
+        const content = await zip.loadAsync(zipFile);
+        const filesArray = [];
 
-      for (const relativePath in content.files) {
-        const file = content.files[relativePath];
-        if (!file.dir) {
-          const fileContent = await file.async("string");
-          filesArray.push({ path: relativePath, content: fileContent });
+        const validExtensions = [
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx",
+          ".html",
+          ".css",
+          ".scss",
+          ".java",
+          ".class",
+          ".go",
+          ".py",
+          ".sh",
+          ".bat",
+          ".json",
+          ".xml",
+          ".yaml",
+          ".yml",
+          ".md",
+          ".txt",
+        ];
+
+        for (const relativePath in content.files) {
+          const file = content.files[relativePath];
+          if (!file.dir) {
+            const extension = relativePath
+              .substring(relativePath.lastIndexOf("."))
+              .toLowerCase();
+            if (validExtensions.includes(extension)) {
+              const fileContent = await file.async("string");
+              filesArray.push({ path: relativePath, content: fileContent });
+
+              // Example of how you might handle the API call, if needed
+              const apiUrl = "http://10.4.4.28:5000/chat"; // Replace with your backend URL
+              const response = await fetch(apiUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  prompt: `I have a program file in my project. I want you to create a proper description about what is happening in this code. I will be providing you with the file path and the file content. Provide the detailed documentation that you will be provided to be enclosed between the markers "<start>" and "</end>". File path is: ${relativePath} and file content is: ${fileContent}`,
+                }),
+              });
+              const responseData = await response.json();
+              console.log(responseData);
+              dispatch(
+                setFiles({
+                  path: relativePath,
+                  description: responseData?.response,
+                })
+              );
+            }
+          }
         }
-      }
 
-      setFiles(filesArray.filter((file) => file.content));
+        setZipFile(null);
+        navigate("/results");
+      } catch (error) {
+        console.error("Error processing ZIP file:", error);
+      } finally {
+        setLoading(false);
+      }
     } else {
-      setError("Please upload a .zip file first.");
+      console.log("No file uploaded.");
     }
-    navigate("/results");
   };
 
   const handleCancel = () => {
     setZipFile(null);
-    setFiles([]);
     setError(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = null;
@@ -197,7 +253,7 @@ function UploadPage() {
             <Button
               variant="contained"
               onClick={handleGenerate}
-              disabled={!zipFile}
+              disabled={!zipFile || loading}
               sx={{
                 width: "100%",
                 height: "50px",
@@ -206,7 +262,7 @@ function UploadPage() {
               }}
               startIcon={<AutoAwesomeIcon />}
             >
-              Generate
+              {loading ? "Generating..." : "Generate"}
             </Button>
             <Button
               variant="outlined"
