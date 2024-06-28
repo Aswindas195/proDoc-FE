@@ -84,14 +84,16 @@ function UploadPage() {
               .toLowerCase();
             if (validExtensions.includes(extension)) {
               const fileContent = await file.async("string");
+              console.log(fileContent, relativePath);
 
               // Example of how you might handle the API call, if needed
-              const apiUrl = "http://10.4.4.28:5000/chat"; // Replace with your backend URL
+              const apiUrl = "http://10.4.4.56:8080/api/upload"; // Replace with your backend URL
               const response = await fetch(apiUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                  prompt: `I have a program file in my project. I want you to create a proper description about what is happening in this code. I will be providing you with the file path and the file content. Provide the detailed documentation that you will be provided to be enclosed between the markers "<start>" and "</end>". File path is: ${relativePath} and file content is: ${fileContent}`,
+                  path: relativePath,
+                  content: fileContent,
                 }),
               });
               const responseData = await response.json();
