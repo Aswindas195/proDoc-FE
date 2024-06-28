@@ -9,9 +9,10 @@ import {
   Chip,
   IconButton,
 } from "@mui/material";
-import UploadFileIcon from "@mui/icons-material/UploadFile";
+
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import { CloudUpload } from "@mui/icons-material";
 
 function UploadPage() {
   const [zipFile, setZipFile] = useState(null);
@@ -135,20 +136,27 @@ function UploadPage() {
               <Button
                 variant="outlined"
                 component="span"
-                startIcon={<UploadFileIcon />}
                 sx={{
                   borderRadius: "10px",
-                  height: "50px",
                   fontSize: "18px",
                   color: "black",
-                  border: "2px solid black",
+                  border: "none",
                   "&:hover": {
-                    border: "2px solid black",
+                    border: "none",
                     backgroundColor: "#f1f1f1",
                   },
                 }}
               >
-                Click here or Drop your files here
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <CloudUpload sx={{ fontSize: "45px" }} />
+                  Click here or Drop your files here
+                </Box>
               </Button>
             </label>
             <Typography variant="body1" sx={{ mt: 1 }}>
