@@ -8,6 +8,8 @@ import {
   Box,
   Chip,
   IconButton,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
 
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
@@ -68,7 +70,6 @@ function UploadPage() {
           ".py",
           ".sh",
           ".bat",
-          ".json",
           ".xml",
           ".yaml",
           ".yml",
@@ -292,6 +293,13 @@ function UploadPage() {
           )}
         </Paper>
       </Container>
+
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </Box>
   );
 }
