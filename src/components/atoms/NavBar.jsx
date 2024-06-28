@@ -6,14 +6,14 @@ const NavBar = () => {
     <Box
       sx={{
         width: "100vw",
-        height: "100px",
+        height: "80px",
         backgroundColor: "black",
         color: "white",
       }}
     >
       <Box
         sx={{
-          fontSize: "45px",
+          fontSize: "30px",
           py: 3,
           px: 5,
           display: "flex",
@@ -21,7 +21,7 @@ const NavBar = () => {
           gap: 1,
         }}
       >
-        <DescriptionOutlinedIcon sx={{ fontSize: "40px" }} />
+        <DescriptionOutlinedIcon sx={{ fontSize: "35px" }} />
         ProDoc.
       </Box>
     </Box>
