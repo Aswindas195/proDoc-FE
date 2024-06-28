@@ -53,7 +53,6 @@ function UploadPage() {
         setLoading(true);
         const zip = new JSZip();
         const content = await zip.loadAsync(zipFile);
-        const filesArray = [];
 
         const validExtensions = [
           ".js",
@@ -85,7 +84,6 @@ function UploadPage() {
               .toLowerCase();
             if (validExtensions.includes(extension)) {
               const fileContent = await file.async("string");
-              filesArray.push({ path: relativePath, content: fileContent });
 
               // Example of how you might handle the API call, if needed
               const apiUrl = "http://10.4.4.28:5000/chat"; // Replace with your backend URL
@@ -97,11 +95,11 @@ function UploadPage() {
                 }),
               });
               const responseData = await response.json();
-              console.log(responseData);
               dispatch(
                 setFiles({
                   path: relativePath,
                   description: responseData?.response,
+                  content: fileContent,
                 })
               );
             }
@@ -116,7 +114,7 @@ function UploadPage() {
         setLoading(false);
       }
     } else {
-      console.log("No file uploaded.");
+      console.error("No file uploaded.");
     }
   };
 
@@ -259,6 +257,9 @@ function UploadPage() {
                 height: "50px",
                 backgroundColor: "black",
                 borderRadius: "10px",
+                "&:hover": {
+                  backgroundColor: "black",
+                },
               }}
               startIcon={<AutoAwesomeIcon />}
             >

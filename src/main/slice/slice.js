@@ -13,9 +13,9 @@ const resultSlice = createSlice({
       return [];
     },
     updateContentByPath: (state, action) => {
-      const { path, content } = action.payload;
+      const { path, description, content } = action.payload;
       return state.map((file) =>
-        file.path === path ? { ...file, content } : file
+        file.path === path ? { ...file, description, content } : file
       );
     },
   },
