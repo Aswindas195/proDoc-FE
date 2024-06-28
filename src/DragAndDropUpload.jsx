@@ -23,7 +23,7 @@ const DragAndDropUpload = ({ onFileUpload }) => {
         padding: "20px",
         borderRadius: "10px",
         textAlign: "center",
-        backgroundColor: isDragActive ? "lightblue" : "white",
+        backgroundColor: isDragActive ? "lightblue" : "",
         color: "white",
         width: "600px",
         height: "300px",
