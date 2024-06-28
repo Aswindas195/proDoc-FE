@@ -27,7 +27,7 @@ function UploadPage() {
       setError(null);
     } else if (file.size >= MAX_SIZE) {
       setZipFile(null);
-      setError("File is over 50MB");
+      setError("File Size is over 50MB");
     } else {
       setZipFile(null);
       setError("Please upload a valid .zip file.");
@@ -113,6 +113,9 @@ function UploadPage() {
               Click to upload
             </Button>
           </label>
+          <Typography variant="body1" sx={{ mt: 1 }}>
+            Maximum files size should be 50MB
+          </Typography>
         </Box>
         {zipFile && (
           <Box
