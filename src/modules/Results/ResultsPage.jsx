@@ -1,17 +1,18 @@
-import { Box, Button, Paper } from "@mui/material";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { updateContentByPath } from "../../main/slice/slice";
+import { Box, Button, Paper, IconButton, Menu, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import DownloadIcon from "@mui/icons-material/Download";
+import JSZip from "jszip";
+import { updateContentByPath } from "../../main/slice/slice";
 
 const ResultsPage = () => {
   const files = useSelector((state) => state.result);
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Ensure you import useNavigate from react-router-dom
+  const navigate = useNavigate();
 
-  // Navigate to "/" if files array is empty
   useEffect(() => {
     if (files.length === 0) {
       navigate("/");
@@ -19,22 +20,18 @@ const ResultsPage = () => {
   }, [files, navigate]);
 
   useEffect(() => {
-    // Add event listener for beforeunload
     const handleBeforeUnload = (event) => {
       event.preventDefault();
-      // Chrome requires returnValue to be set
       event.returnValue = "";
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
-      // Cleanup: remove event listener
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
 
-  // Check if files array has elements before setting initial state
   const initialSelectedFile = files.length > 0 ? files[0] : null;
   const [selectedFile, setSelectedFile] = useState(initialSelectedFile);
   const [isLoading, setIsLoading] = useState(false);
@@ -79,6 +76,43 @@ const ResultsPage = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDownloadCurrent = () => {
+    if (selectedFile) {
+      const element = document.createElement("a");
+      const file = new Blob([selectedFile.description], {
+        type: "text/plain",
+      });
+      element.href = URL.createObjectURL(file);
+      element.download = `${selectedFile.path}.md`;
+      document.body.appendChild(element);
+      element.click();
+    }
+    handleMenuClose();
+  };
+
+  const handleDownloadAll = () => {
+    const zip = new JSZip();
+    files.forEach((file) => {
+      zip.file(`${file.path}.md`, file.description || "");
+    });
+    zip.generateAsync({ type: "blob" }).then((content) => {
+      const element = document.createElement("a");
+      element.href = URL.createObjectURL(content);
+      element.download = "files.zip";
+      document.body.appendChild(element);
+      element.click();
+    });
+    handleMenuClose();
   };
 
   return (
@@ -129,7 +163,14 @@ const ResultsPage = () => {
             borderRadius: "15px",
           }}
         >
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 3 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 3,
+            }}
+          >
             <Button
               variant="outlined"
               sx={{
@@ -146,8 +187,35 @@ const ResultsPage = () => {
             >
               {isLoading ? `Regenerating...` : `Regenerate`}
             </Button>
+            <IconButton
+              aria-label="download"
+              onClick={handleMenuOpen}
+              sx={{
+                color: "black",
+              }}
+            >
+              <DownloadIcon />
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+            >
+              <MenuItem onClick={handleDownloadCurrent}>
+                Download Current File
+              </MenuItem>
+              <MenuItem onClick={handleDownloadAll}>
+                Download All as Zip
+              </MenuItem>
+            </Menu>
           </Box>
-          <Box sx={{ overflowY: "auto", height: "calc(100vh - 360px)", px: 2 }}>
+          <Box
+            sx={{
+              overflowY: "auto",
+              height: "calc(100vh - 360px)",
+              px: 2,
+            }}
+          >
             <Markdown remarkPlugins={[remarkGfm]}>
               {selectedFile?.description}
             </Markdown>
