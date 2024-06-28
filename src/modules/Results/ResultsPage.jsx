@@ -1,160 +1,106 @@
-import { useState } from "react";
-import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Typography,
-  Container,
-  Pagination,
-  Box,
-} from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Box, Button, Paper, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 
-const contents = [
-  { title: "Item 1", details: "Details of Item 1" },
-  { title: "Item 2", details: "Details of Item 2" },
-  { title: "Item 3", details: "Details of Item 3" },
-  { title: "Item 4", details: "Details of Item 4" },
-  { title: "Item 5", details: "Details of Item 5" },
-  { title: "Item 6", details: "Details of Item 6" },
-  { title: "Item 7", details: "Details of Item 7" },
-  { title: "Item 8", details: "Details of Item 8" },
-  { title: "Item 9", details: "Details of Item 9" },
-  { title: "Item 10", details: "Details of Item 10" },
-  // Add more items as needed
-];
-
-const ITEMS_PER_PAGE = 8;
-
 const ResultsPage = () => {
-  const [currentPage, setCurrentPage] = useState(1);
   const files = useSelector((state) => state.result);
   console.log(files);
-
-  const handlePageChange = (event, value) => {
-    setCurrentPage(value);
-  };
-
-  const paginatedContents = contents.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
-
   return (
-    <Container sx={{ mt: 4 }}>
-      <Box>
-        {paginatedContents.map((content, index) => (
-          <Accordion key={index} sx={{ borderRadius: "10px", my: 1 }}>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>{content.title}</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Typography>{content.details}</Typography>
-            </AccordionDetails>
-          </Accordion>
-        ))}
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
-          <Pagination
-            count={Math.ceil(contents.length / ITEMS_PER_PAGE)}
-            page={currentPage}
-            onChange={handlePageChange}
-            color="primary"
-          />
+    <Box sx={{ padding: "70px" }}>
+      <Box sx={{ display: "flex" }}>
+        <Box
+          sx={{ display: "flex", flexDirection: "column", marginRight: "20px" }}
+        >
+          {files.map(files=>)}
         </Box>
+        <Paper
+          elevation={3}
+          sx={{
+            padding: "20px",
+            width: "100%",
+            height: "calc(100vh - 280px)",
+            overflowY: "auto",
+            wordBreak: "break-word",
+            borderRadius: "15px",
+          }}
+        >
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 3 }}>
+            <Button variant="outlined" sx={{ borderRadius: "10px" }}>
+              Regenerate
+            </Button>
+          </Box>
+          <Box sx={{ overflowY: "auto", height: "calc(100vh - 360px)", px: 2 }}>
+            <Typography>
+              content Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Eaque porro, minima maxime inventore saepe veritatis ratione
+              expedita optio, laborum quisquam error incidunt rem facere. Iste
+              dolor laudantium optio veniam iure. Lorem ipsum, dolor sit amet
+              consectetur adipisicing elit. Repellat, autem corporis impedit
+              delectus beatae vero, inventore excepturi necessitatibus alias
+              exercitationem magni itaque maiores enim deleniti totam
+              laudantium, vel hic perferendis fugiat tempore! Laudantium, quis,
+              fugit labore suscipit corrupti ut repellendus ipsa veniam culpa
+              placeat dicta sint quasi modi aspernatur eius itaque voluptatum
+              alias quos numquam perferendis voluptate! Fuga deleniti ipsa
+              repellat nemo asperiores qui necessitatibus, ipsum consequatur
+              magnam consequuntur harum accusamus quidem quod sequi, minus
+              cumque. Iusto minima et soluta voluptatum impedit nulla, adipisci
+              quo atque facere doloremque omnis aperiam debitis molestias rerum
+              obcaecati nesciunt dignissimos hic cumque magni, architecto
+              suscipit, eos necessitatibus deserunt? Harum tenetur praesentium
+              amet ex quisquam molestias ipsam assumenda, voluptatem ea nihil
+              in! Porro quam, possimus eum alias qui, eveniet inventore
+              obcaecati provident molestias sunt totam, consequatur soluta?
+              Tenetur eos voluptatem laudantium voluptatum sunt ratione sapiente
+              nam, accusamus optio enim blanditiis veritatis sint pariatur a,
+              iure officia aspernatur distinctio dolorem ducimus facilis placeat
+              est repellendus quae. Vitae, libero? Qui officia maxime adipisci
+              deserunt laborum modi neque explicabo dignissimos sint cumque,
+              facere, dolores laudantium esse delectus vitae nulla enim beatae
+              odio non, laboriosam iste labore libero vero aperiam. Ullam
+              repellat maiores tenetur quo pariatur soluta commodi repellendus
+              maxime voluptates quod voluptas facere corporis officia velit
+              ipsam culpa nam doloribus libero dolorem exercitationem impedit,
+              deserunt animi. Sit, nobis. Voluptatem nisi quae enim doloremque
+              temporibus facere est earum vel odio accusamus, nostrum illum
+              perspiciatis? Quam doloribus libero omnis architecto delectus
+              expedita eligendi non voluptate beatae sapiente ipsam molestiae,
+              tempora atque! Error necessitatibus quasi commodi quod. At natus
+              eos aliquam voluptates unde. Alias pariatur ea in et laborum
+              dolorum animi quisquam? Veniam, totam ad deleniti cumque corrupti
+              voluptas blanditiis nulla ea consectetur optio quibusdam sequi,
+              nostrum libero aliquid facere quisquam numquam iste tenetur!
+              Dolore ab dignissimos voluptas libero, doloribus et nobis nostrum
+              officiis voluptatibus perspiciatis excepturi natus ipsa
+              consectetur earum molestiae asperiores deleniti illum possimus
+              iusto error sapiente incidunt? Ratione et accusamus natus!
+              Necessitatibus similique aut architecto ut officia accusantium at,
+              qui est illum beatae cupiditate doloremque. Iusto, mollitia
+              dolorem aspernatur corrupti minus, ut molestiae natus officia
+              necessitatibus iste animi? Consectetur, voluptates alias? Cumque
+              voluptatum hic tempore reprehenderit eligendi iusto numquam ut
+              praesentium distinctio placeat itaque non aperiam aut quis,
+              assumenda, soluta ad quod voluptas, laborum unde. Omnis sunt
+              architecto tempore provident odio et modi perspiciatis, alias
+              temporibus earum unde voluptates expedita nemo id a praesentium
+              nesciunt neque inventore. Repellendus, possimus fuga molestias,
+              maxime quia rerum ipsam cupiditate ea, sint a dolor? Perferendis
+              soluta consectetur maxime nostrum? Sapiente unde inventore impedit
+              maiores assumenda harum! Quae voluptate blanditiis, animi, vel
+              expedita cupiditate nisi fugiat aut voluptas quam non laboriosam
+              officiis voluptatum error. Optio aperiam, delectus cumque odio
+              quod unde impedit explicabo vel, quibusdam commodi incidunt
+              deserunt. Aliquid aliquam sint numquam, rem tempora molestiae odio
+              minima eligendi explicabo, ipsam deleniti corrupti veniam
+              doloribus eius pariatur esse sunt reprehenderit qui accusamus! Sit
+              ex, temporibus repellat repellendus qui doloribus ullam deleniti
+              eaque! Accusamus voluptate consequuntur quod illo laboriosam
+              aliquid cupiditate ea quidem nulla et.
+            </Typography>
+          </Box>
+        </Paper>
       </Box>
-    </Container>
+    </Box>
   );
 };
 
 export default ResultsPage;
-
-// import React, { useEffect } from 'react';
-// import { itemsPerPagination } from '../../main/consts';
-// import { Body2 } from '../../main/styles';
-// import { Box, Pagination } from '@mui/material';
-// import { useTranslation } from 'react-i18next';
-
-// function PaginationComponent({
-//   lengthOfItems,
-//   itemsPerPage,
-//   setItemsPerPage,
-//   pageNumber,
-//   setPageNumber,
-//   showRecordsPerPage = true,
-// }) {
-//   const { t } = useTranslation();
-
-//   const paginationRows = [
-//     ...itemsPerPagination.filter((row) => row < lengthOfItems),
-//     lengthOfItems,
-//   ];
-//   const countOfRows = Math.ceil(lengthOfItems / itemsPerPage);
-
-//   const handleChangeForItemsPerPage = (event) => {
-//     setItemsPerPage(event.target.value);
-//     setPageNumber(1);
-//   };
-
-//   const handleChangeForPageNumber = (event, page) => {
-//     setPageNumber(page);
-//     countOfRows === lengthOfItems &&
-//       setItemsPerPage(lengthOfItems % itemsPerPage);
-//   };
-
-//   useEffect(() => {
-//     setPageNumber(1);
-//     setItemsPerPage(8);
-//   }, [lengthOfItems]);
-
-//   return (
-//     <Box
-//       component={'div'}
-//       sx={{
-//         py: '10px',
-//         display: 'flex',
-//         justifyContent: 'space-between',
-//         width: '100%',
-//         ...(!showRecordsPerPage && { justifyContent: 'center' }),
-//       }}
-//     >
-//       {lengthOfItems > 0 && (
-//         <>
-//           {showRecordsPerPage && (
-//             <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-//               <Body2>{t('common.paginationText')}</Body2>
-//               <select
-//                 name=""
-//                 id=""
-//                 onChange={handleChangeForItemsPerPage}
-//                 disabled={lengthOfItems <= itemsPerPagination[0]}
-//                 style={{
-//                   display: 'block',
-//                   background: 'none',
-//                   outline: 'none',
-//                   border: 'none',
-//                   fontSize: '16px',
-//                   width: 'max-content',
-//                 }}
-//               >
-//                 {paginationRows?.map((row, i) => (
-//                   <option key={i} value={row}>
-//                     {row}
-//                   </option>
-//                 ))}
-//               </select>
-//               <Body2>of {lengthOfItems}</Body2>
-//             </div>
-//           )}
-//           <Pagination
-//             page={pageNumber}
-//             count={countOfRows}
-//             onChange={handleChangeForPageNumber}
-//           />
-//         </>
-//       )}
-//     </Box>
-//   );
-// }
-
-// export default PaginationComponent;
