@@ -17,11 +17,16 @@ function UploadPage() {
   const [zipFile, setZipFile] = useState(null);
   const [files, setFiles] = useState([]);
   const [error, setError] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
   const MAX_SIZE = 50 * 1024 * 1024;
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
+    processFile(file);
+  };
+
+  const processFile = (file) => {
     if (file && file.type === "application/zip" && file.size <= MAX_SIZE) {
       setZipFile(file);
       setError(null);
@@ -53,7 +58,6 @@ function UploadPage() {
       setError("Please upload a .zip file first.");
     }
   };
-  console.log(files);
 
   const handleCancel = () => {
     setZipFile(null);
@@ -62,6 +66,26 @@ function UploadPage() {
     if (fileInputRef.current) {
       fileInputRef.current.value = null;
     }
+  };
+
+  const handleDrop = (event) => {
+    event.preventDefault();
+    const file = event.dataTransfer.files[0];
+    processFile(file);
+    setIsDragging(false);
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragEnter = () => {
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
   };
 
   return (
@@ -79,7 +103,13 @@ function UploadPage() {
             alignContent: "center",
             mb: 2,
             height: "200px",
+            backgroundColor: isDragging ? "red" : "transparent",
+            transition: "background-color 0.3s",
           }}
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
         >
           <Typography variant="body1" sx={{ mb: 1 }}>
             Upload and attach files to this project.
@@ -110,11 +140,11 @@ function UploadPage() {
                 },
               }}
             >
-              Click to upload
+              {isDragging ? `Drop here` : `Click to upload`}
             </Button>
           </label>
           <Typography variant="body1" sx={{ mt: 1 }}>
-            Maximum files size should be 50MB
+            Maximum file size should be 50MB
           </Typography>
         </Box>
         {zipFile && (
@@ -181,21 +211,6 @@ function UploadPage() {
           <Typography variant="body1" color="error" sx={{ mt: 2 }}>
             {error}
           </Typography>
-        )}
-        {files.length > 0 && (
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="h5" gutterBottom>
-              Extracted Files
-            </Typography>
-            <ul style={{ listStyleType: "none", padding: 0 }}>
-              {files.map((file, index) => (
-                <li key={index}>
-                  <Typography variant="subtitle1">{file.path}</Typography>
-                  <pre>{file.content}</pre>
-                </li>
-              ))}
-            </ul>
-          </Box>
         )}
       </Paper>
     </Container>
