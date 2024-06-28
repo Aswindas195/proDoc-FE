@@ -1,66 +1,72 @@
 import React, { useState } from "react";
 import JSZip from "jszip";
 import "./App.css";
-import InputFileUpload from "./InputFileUpload";
+import DragAndDropUpload from "./DragAndDropUpload";
+import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
-import DescriptionIcon from "@mui/icons-material/Description";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome"; // Use the desired icon
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import CloseIcon from "@mui/icons-material/Close";
 
 function App() {
   const [zipFile, setZipFile] = useState(null);
-  const [fileData, setFileData] = useState([]); // State to store file data
+  const [fileData, setFileData] = useState([]);
 
-  const handleFileUpload = (event) => {
-    setZipFile(event.target.files[0]);
+  const handleFileUpload = (file) => {
+    setZipFile(file);
+  };
+
+  const handleRemoveFile = () => {
+    setZipFile(null);
+    setFileData([]);
   };
 
   const handleGenerate = async () => {
     if (zipFile) {
       const zip = new JSZip();
       const content = await zip.loadAsync(zipFile);
-      const data = []; // Temporary array to store file data
+      const data = [];
 
       const validExtensions = [
         ".js",
         ".jsx",
         ".ts",
-        ".tsx", // JavaScript/TypeScript
+        ".tsx",
         ".html",
         ".css",
-        ".scss", // Web
+        ".scss",
         ".java",
-        ".class", // Java
-        ".go", // Golang
-        ".py", // Python
+        ".class",
+        ".go",
+        ".py",
         ".sh",
-        ".bat", // Scripts
+        ".bat",
         ".json",
         ".xml",
         ".yaml",
-        ".yml", // Config files
-        ".md", // Markdown
-        ".txt", // Text files
+        ".yml",
+        ".md",
+        ".txt",
       ];
 
       for (const relativePath in content.files) {
         const file = content.files[relativePath];
         if (!file.dir && file._data !== null) {
-          // Check if file is not a directory and has content
           const extension = relativePath
             .substring(relativePath.lastIndexOf("."))
             .toLowerCase();
           if (validExtensions.includes(extension)) {
             const fileData = await file.async("text");
-            data.push({
-              path: relativePath,
-              content: fileData,
-            });
+            data.push({ path: relativePath, content: fileData });
           }
         }
       }
 
-      setFileData(data); // Store all file data in state
-      console.log("File data:", data); // Print the file data structure
+      setFileData(data);
+      console.log("File data:", data);
     } else {
       console.log("No file uploaded.");
     }
@@ -68,11 +74,34 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Upload and Generate File List</h1>
-      <InputFileUpload onChange={handleFileUpload} />
-      <IconButton color="primary" onClick={handleGenerate}>
-        <DescriptionIcon />
-      </IconButton>
+      <AppBar position="static" sx={{ backgroundColor: "black" }}>
+        <Toolbar>
+          <Typography
+            variant="h6"
+            color="inherit"
+            component="div"
+            sx={{ marginLeft: 1 }}
+          >
+            ProDoc.
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Box className="content">
+        <h1>Upload and Generate File List</h1>
+        <DragAndDropUpload onFileUpload={handleFileUpload} />
+        {zipFile && (
+          <IconButton color="secondary" onClick={handleRemoveFile}>
+            <CloseIcon />
+          </IconButton>
+        )}
+      </Box>
+      <Button
+        variant="outlined"
+        startIcon={<AutoAwesomeIcon sx={{ color: " #FFD700" }} />}
+        sx={{ color: "black", backgroundColor: "lightgrey" }}
+      >
+        Delete
+      </Button>
     </div>
   );
 }
