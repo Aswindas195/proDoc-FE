@@ -1,6 +1,8 @@
-import { Box, Button, Paper, Typography } from "@mui/material";
+import { Box, Button, Paper } from "@mui/material";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const ResultsPage = () => {
   const files = useSelector((state) => state.result);
@@ -27,6 +29,7 @@ const ResultsPage = () => {
                 marginBottom: "10px",
                 width: "250px",
                 borderRadius: "10px",
+                textTransform: "capitalize",
               }}
               onClick={() => handleClick(file)}
             >
@@ -51,7 +54,9 @@ const ResultsPage = () => {
             </Button>
           </Box>
           <Box sx={{ overflowY: "auto", height: "calc(100vh - 360px)", px: 2 }}>
-            <Typography>{selectedFile?.description}</Typography>
+            <Markdown remarkPlugins={[remarkGfm]}>
+              {selectedFile?.description}
+            </Markdown>
           </Box>
         </Paper>
       </Box>
