@@ -92,6 +92,18 @@ const ResultsPage = () => {
             gap: 1,
             height: "calc(100vh - 240px)",
             overflow: "auto",
+            "&::-webkit-scrollbar": {
+              width: "12px",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#ccc",
+              borderRadius: "10px",
+              border: "3px solid transparent",
+              backgroundClip: "content-box",
+            },
+            "&::-webkit-scrollbar-thumb:hover": {
+              backgroundColor: "#aaa",
+            },
           }}
         >
           {files.map((file, index) => (
@@ -147,7 +159,25 @@ const ResultsPage = () => {
               {isLoading ? `Regenerating...` : `Regenerate`}
             </Button>
           </Box>
-          <Box sx={{ overflowY: "auto", height: "calc(100vh - 360px)", px: 2 }}>
+          <Box
+            sx={{
+              overflowY: "auto",
+              height: "calc(100vh - 360px)",
+              px: 2,
+              "&::-webkit-scrollbar": {
+                width: "12px",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#ccc",
+                borderRadius: "10px",
+                border: "3px solid transparent",
+                backgroundClip: "content-box",
+              },
+              "&::-webkit-scrollbar-thumb:hover": {
+                backgroundColor: "#aaa",
+              },
+            }}
+          >
             <Markdown remarkPlugins={[remarkGfm]}>
               {selectedFile?.description}
             </Markdown>
