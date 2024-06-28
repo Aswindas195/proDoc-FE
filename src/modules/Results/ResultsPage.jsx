@@ -1,8 +1,70 @@
-const ResultPage = () => {
-  return <></>;
+import { useState } from "react";
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
+  Container,
+  Pagination,
+  Box,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
+const contents = [
+  { title: "Item 1", details: "Details of Item 1" },
+  { title: "Item 2", details: "Details of Item 2" },
+  { title: "Item 3", details: "Details of Item 3" },
+  { title: "Item 4", details: "Details of Item 4" },
+  { title: "Item 5", details: "Details of Item 5" },
+  { title: "Item 6", details: "Details of Item 6" },
+  { title: "Item 7", details: "Details of Item 7" },
+  { title: "Item 8", details: "Details of Item 8" },
+  { title: "Item 9", details: "Details of Item 9" },
+  { title: "Item 10", details: "Details of Item 10" },
+  // Add more items as needed
+];
+
+const ITEMS_PER_PAGE = 8;
+
+const ResultsPage = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+  };
+
+  const paginatedContents = contents.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  return (
+    <Container sx={{ mt: 4 }}>
+      <Box>
+        {paginatedContents.map((content, index) => (
+          <Accordion key={index} sx={{ borderRadius: "10px", my: 1 }}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>{content.title}</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>{content.details}</Typography>
+            </AccordionDetails>
+          </Accordion>
+        ))}
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+          <Pagination
+            count={Math.ceil(contents.length / ITEMS_PER_PAGE)}
+            page={currentPage}
+            onChange={handlePageChange}
+            color="primary"
+          />
+        </Box>
+      </Box>
+    </Container>
+  );
 };
 
-export default ResultPage;
+export default ResultsPage;
 
 // import React, { useEffect } from 'react';
 // import { itemsPerPagination } from '../../main/consts';

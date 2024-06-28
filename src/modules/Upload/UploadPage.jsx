@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 
 function UploadPage() {
   const [zipFile, setZipFile] = useState(null);
@@ -64,21 +65,23 @@ function UploadPage() {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ borderRadius: "10px", mt: 4 }}>
-      <Paper sx={{ p: 2, borderRadius: "10px" }}>
-        <Typography variant="h4" gutterBottom sx={{ textAlign: "center" }}>
+    <Container sx={{ mt: 4, borderRadius: "20px", width: "50%" }}>
+      <Paper sx={{ p: 5, pt: 4, borderRadius: "20px" }}>
+        <Typography variant="h4" gutterBottom>
           Upload and Generate File List
         </Typography>
         <Box
           sx={{
-            border: "1px dashed grey",
-            borderRadius: "5px",
+            border: "3px dashed grey",
+            borderRadius: "10px",
             p: 2,
             textAlign: "center",
+            alignContent: "center",
             mb: 2,
+            height: "200px",
           }}
         >
-          <Typography variant="body2" gutterBottom>
+          <Typography variant="body1" sx={{ mb: 1 }}>
             Upload and attach files to this project.
           </Typography>
           <input
@@ -94,6 +97,18 @@ function UploadPage() {
               variant="outlined"
               component="span"
               startIcon={<UploadFileIcon />}
+              sx={{
+                borderRadius: "10px",
+                height: "50px",
+                width: "300px",
+                fontSize: "18px",
+                color: "black",
+                border: "2px solid black",
+                "&:hover": {
+                  border: "2px solid black",
+                  backgroundColor: "#f1f1f1",
+                },
+              }}
             >
               Click to upload
             </Button>
@@ -105,8 +120,8 @@ function UploadPage() {
               display: "flex",
               alignItems: "center",
               p: 1,
-              border: "1px solid #ccc",
-              borderRadius: "5px",
+              border: "2px solid black",
+              borderRadius: "10px",
               mb: 2,
             }}
           >
@@ -131,14 +146,30 @@ function UploadPage() {
             variant="contained"
             onClick={handleGenerate}
             disabled={!zipFile}
-            sx={{ width: "100%" }}
+            sx={{
+              width: "100%",
+              height: "50px",
+              backgroundColor: "black",
+              borderRadius: "10px",
+            }}
+            startIcon={<AutoAwesomeIcon />}
           >
             Generate
           </Button>
           <Button
             variant="outlined"
             onClick={handleCancel}
-            sx={{ width: "100%" }}
+            sx={{
+              width: "100%",
+              height: "50px",
+              color: "black",
+              borderRadius: "10px",
+              border: "1px solid grey",
+              "&:hover": {
+                border: "1px solid black",
+                backgroundColor: "#f1f1f1",
+              },
+            }}
           >
             Cancel
           </Button>
