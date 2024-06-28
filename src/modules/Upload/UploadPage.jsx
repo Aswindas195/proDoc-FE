@@ -13,8 +13,10 @@ import {
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import { CloudUpload } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 function UploadPage() {
+  const navigate = useNavigate();
   const [zipFile, setZipFile] = useState(null);
   const [files, setFiles] = useState([]);
   const [error, setError] = useState(null);
@@ -58,6 +60,7 @@ function UploadPage() {
     } else {
       setError("Please upload a .zip file first.");
     }
+    navigate("/results");
   };
 
   const handleCancel = () => {
