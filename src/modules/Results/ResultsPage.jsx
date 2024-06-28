@@ -83,21 +83,30 @@ const ResultsPage = () => {
 
   return (
     <Box sx={{ padding: "70px" }}>
-      <Box sx={{ display: "flex" }}>
+      <Box sx={{ display: "flex", gap: 1 }}>
         <Box
-          sx={{ display: "flex", flexDirection: "column", marginRight: "20px" }}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            marginRight: "20px",
+            gap: 1,
+            height: "calc(100vh - 240px)",
+            overflow: "auto",
+          }}
         >
           {files.map((file, index) => (
             <Button
               key={index}
               sx={{
                 wordBreak: "break-word",
-                backgroundColor: selectedFile?.path === file.path && "black",
+                backgroundColor:
+                  selectedFile?.path === file.path ? "black" : "white",
                 color: selectedFile?.path === file.path ? "white" : "black",
                 marginBottom: "10px",
-                width: "250px",
+                marginRight: 1,
                 borderRadius: "10px",
-                border: "1px solid black",
+                border: "none",
+                boxShadow: "2px 2px 2px 1px #e1e1e1",
                 textTransform: "none",
                 "&:hover": {
                   backgroundColor: selectedFile?.path === file.path && "black",
