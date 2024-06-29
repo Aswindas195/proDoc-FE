@@ -10,6 +10,7 @@ import {
   Menu,
   MenuItem,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import DownloadIcon from "@mui/icons-material/Download";
@@ -186,46 +187,57 @@ const ResultsPage = () => {
           <Box
             sx={{
               display: "flex",
-              justifyContent: "flex-end",
+              justifyContent: "space-between",
               alignItems: "center",
-              mb: 3,
+              mx: 2,
             }}
           >
-            <Tooltip title={"Regenerate"}>
-              <IconButton
-                aria-label="regenerate"
-                onClick={handleRegenerate}
-                sx={{
-                  color: "black",
-                }}
-                disabled={isLoading}
-              >
-                <RefreshIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={"Download"}>
-              <IconButton
-                aria-label="download"
-                onClick={handleMenuOpen}
-                sx={{
-                  color: "black",
-                }}
-              >
-                <DownloadIcon />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
+            <Typography sx={{ fontSize: "30px", fontWeight: "600" }}>
+              Description
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+              }}
             >
-              <MenuItem onClick={handleDownloadCurrent}>
-                Download Current File
-              </MenuItem>
-              <MenuItem onClick={handleDownloadAll}>
-                Download All as Zip
-              </MenuItem>
-            </Menu>
+              <Tooltip title={"Regenerate"}>
+                <IconButton
+                  aria-label="regenerate"
+                  onClick={handleRegenerate}
+                  sx={{
+                    color: "black",
+                  }}
+                  disabled={isLoading}
+                >
+                  <RefreshIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={"Download"}>
+                <IconButton
+                  aria-label="download"
+                  onClick={handleMenuOpen}
+                  sx={{
+                    color: "black",
+                  }}
+                >
+                  <DownloadIcon />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+              >
+                <MenuItem onClick={handleDownloadCurrent}>
+                  Download Current File
+                </MenuItem>
+                <MenuItem onClick={handleDownloadAll}>
+                  Download All as Zip
+                </MenuItem>
+              </Menu>
+            </Box>
           </Box>
           <Box
             sx={{
