@@ -2,9 +2,18 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Box, Button, Paper, IconButton, Menu, MenuItem } from "@mui/material";
+import {
+  Box,
+  Button,
+  Paper,
+  IconButton,
+  Menu,
+  MenuItem,
+  Tooltip,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import DownloadIcon from "@mui/icons-material/Download";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import JSZip from "jszip";
 import { updateContentByPath } from "../../main/slice/slice";
 
@@ -178,36 +187,34 @@ const ResultsPage = () => {
           <Box
             sx={{
               display: "flex",
-              justifyContent: "space-between",
+              justifyContent: "flex-end",
               alignItems: "center",
               mb: 3,
             }}
           >
-            <Button
-              variant="outlined"
-              sx={{
-                borderRadius: "10px",
-                color: "black",
-                border: "1px solid black",
-                "&:hover": {
-                  border: "1px solid black",
-                  backgroundColor: "#f1f1f1",
-                },
-              }}
-              onClick={handleRegenerate}
-              disabled={isLoading}
-            >
-              {isLoading ? `Regenerating...` : `Regenerate`}
-            </Button>
-            <IconButton
-              aria-label="download"
-              onClick={handleMenuOpen}
-              sx={{
-                color: "black",
-              }}
-            >
-              <DownloadIcon />
-            </IconButton>
+            <Tooltip title={"Regenerate"}>
+              <IconButton
+                aria-label="regenerate"
+                onClick={handleRegenerate}
+                sx={{
+                  color: "black",
+                }}
+                disabled={isLoading}
+              >
+                <RefreshIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title={"Download"}>
+              <IconButton
+                aria-label="download"
+                onClick={handleMenuOpen}
+                sx={{
+                  color: "black",
+                }}
+              >
+                <DownloadIcon />
+              </IconButton>
+            </Tooltip>
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
