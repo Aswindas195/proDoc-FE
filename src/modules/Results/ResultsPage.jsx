@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -67,7 +67,6 @@ const ResultsPage = () => {
       }
 
       const responseData = await response.json();
-      console.log(responseData);
 
       dispatch(
         updateContentByPath({

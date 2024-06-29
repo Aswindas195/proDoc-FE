@@ -85,7 +85,6 @@ function UploadPage() {
               .toLowerCase();
             if (validExtensions.includes(extension)) {
               const fileContent = await file.async("string");
-              console.log(fileContent, relativePath);
 
               // Example of how you might handle the API call, if needed
               const apiUrl = "http://10.4.4.56:8080/api/upload"; // Replace with your backend URL
